@@ -2,6 +2,8 @@
 import itchat
 from itchat.content import *
 from ocr import *
+from db import *
+
 itchat.auto_login()
 print "Initializing..."
 '''
@@ -15,9 +17,11 @@ INIT_SCORE = 1 # initial score for user
 CHATROOM_NAME = 'ceshi'
 CHATROOM_NAME_CH = u"测试"
 
+DB_NAME = "wechatDB"
 '''
 SET UP
 '''
+#wechat
 FRIENDS = itchat.get_friends(update=True)[1:]
 FRIEND_NAME_TO_KEY = {friend.PYQuanPin: friend.UserName for friend in FRIENDS}
 FRIEND_KEY_TO_NAME = {c:i for i,c in FRIEND_NAME_TO_KEY.items()}
@@ -30,11 +34,12 @@ MEMBERS = chatroom['MemberList']
 MEMBER_KEY_TO_NAME = {m['UserName']: m['PYQuanPin'] for m in MEMBERS}
 MEMBER_SCORE = {m['PYQuanPin']: INIT_SCORE for m in MEMBERS}
 
-#OCR utils
-from PIL import Image
-import pytesseract
+#running
+scoreDB = ScoreDB(DB_NAME)
+scoreDB.checkOut(FRIEND_NAME_TO_KEY.keys())
+
 '''
-WECHAT BOT UTILS
+running
 '''
 def send_friend(message, name):
 	target = [friendName for friendName in FRIEND_NAME_TO_KEY.keys() if name in friendName]
@@ -80,5 +85,17 @@ def download_files(msg):
 	if distance < 5:
 		send_chatroom(u"打卡成功", CHATROOM_KEY)
 	MEMBER_SCORE[senderName] += 1
+	scoreDB.addPoint(senderName, 1)
+#时间响应，定时对scoreDB 进行udpate
 
+def dailyUpdate():
+	raise NotImplementedError
+
+#从群里删人
+def deleteFromChatroom():
+	raise NotImplementedError
+
+#将新加入群的人添加到db
+def onAddMember():
+	raise NotImplementedError
 itchat.run()
