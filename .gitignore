@@ -1,4 +1,5 @@
 *.pyc
 /cache/*
+/test/*
 .ipynb*
 *.txt
