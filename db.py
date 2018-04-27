@@ -16,10 +16,10 @@ class ScoreDB:
 		self.db = client[db_name]
 		self.scores = self.db["scores"]
 	
-	def checkOut(name_list):
+	def checkOut(self,name_list):
 		for name in name_list:
 			if self.scores.find_one({"name":name}) is None:
-				self.scores.insert({"name":name, "score":2})
+				self.scores.insert({"name":name, "score":2, "updated":1})
 
 	def insert(self, info):
 		# insert new person with initial score
@@ -35,6 +35,10 @@ class ScoreDB:
 		# 每天固定时间减一分
 		self.scores.update_many({}, {"$inc": {"score":-1}, "$set": {"updated":0}})
 	
+	def dailyUpdateRecover(self):
+		# 每天固定时间加一分(测试用)
+		self.scores.update_many({}, {"$inc": {"score":1}, "$set": {"updated":0}})
+
 	def kickOut(self):
 		# 找出0分的人
 		kickOutObjs = self.scores.find({"score":{"$lt":1}})
