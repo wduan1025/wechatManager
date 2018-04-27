@@ -39,4 +39,4 @@ if __name__ == '__main__':
 	'''
 	s1 = "Merge"
 	s2 = "Marga"
-	print get_edit_distance(s1, s2)
+print get_edit_distance(s1, s2)
