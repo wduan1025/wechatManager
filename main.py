@@ -136,7 +136,7 @@ def downloa_files(msg):
 	distance = get_edit_distance(s, PROBLEM_TITLE)
 	if distance < 5:
 		send_chatroom(u"打卡成功", CHATROOM_KEY)
-		scoreDB.addPoint(senderName, 1)
+		scoreDB.recoverScore(senderName, 1)
 
 #时间响应，定时对scoreDB 进行udpate
 @sched.scheduled_job("cron", args = [scoreDB], day_of_week = "mon-sun", hour = "0-23", minute = "0-59", second = "3")
