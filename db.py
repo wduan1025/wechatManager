@@ -25,11 +25,11 @@ class ScoreDB:
 		# insert new person with initial score
 		self.scores.insert_one(info)
 	
-	def addPoint(self, user_name, points):
+	def recoverScore(self, user_name, initial_points):
 		# 加分
 		if self.scores.find_one({"name":user_name})["updated"] == 1:
 			return
-		self.scores.update_one({"name":user_name}, {"$inc":{"score":points}, "$set":{"updated":1}})
+		self.scores.update_one({"name":user_name}, {"$set":{"score":initial_points}, "$set":{"updated":1}})
 
 	def dailyUpdate(self):
 		# 每天固定时间减一分
@@ -73,5 +73,5 @@ if __name__ == "__main__":
 	scoreDB.show()
 	print "recover"
 	for name in name_list:
-		scoreDB.addPoint(name, 1)
+		scoreDB.recoverScore(name, 2)
 	scoreDB.show()
